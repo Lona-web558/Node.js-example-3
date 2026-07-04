@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enterprise Multi-Currency Encryption Terminal Switch</title>
+    <style>
+        body { font-family: monospace; background: #0b0e14; color: #c5cdd8; padding: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .card { background: #141923; border: 1px solid #262e3d; padding: 25px; border-radius: 6px; }
+        input, select { width: 100%; background: #0b0e14; border: 1px solid #262e3d; color: #fff; padding: 10px; margin: 8px 0; box-sizing: border-box; font-family: monospace; font-size: 13px; }
+        button { background: #ff5a1f; color: white; font-weight: bold; border: none; padding: 14px; cursor: pointer; width: 100%; font-family: monospace; text-transform: uppercase; font-size: 13px; transition: 0.2s; }
+        button:hover { opacity: 0.9; }
+        .btn-settle { background: #27ae60; margin-top: 15px; }
+        
+        /* Terminal Container style with Copy Header interface wrapper */
+        .terminal-container { position: relative; margin-top: 20px; }
+        .terminal-header { display: flex; justify-content: space-between; align-items: center; background: #1c2330; padding: 6px 12px; border: 1px solid #262e3d; border-bottom: none; border-radius: 4px 4px 0 0; }
+        .btn-copy { background: #3a475d; width: auto; padding: 4px 10px; font-size: 11px; text-transform: none; border-radius: 3px; }
+        .btn-copy:active { background: #27ae60; }
+        
+        pre { background: #05070a; padding: 15px; border-radius: 0 0 4px 4px; font-size: 11px; white-space: pre-wrap; overflow-x: auto; color: #39ff14; max-height: 380px; border: 1px solid #262e3d; margin: 0; }
+        h3 { color: #fff; border-bottom: 1px solid #262e3d; padding-bottom: 8px; margin-top: 0; }
+    </style>
+</head>
+<body>
+
+<h1 style="text-align:center; color: #fff; margin-bottom: 30px;">Global Switching Node Dashboard</h1>
+<div class="grid">
+    
+    <!-- Input Payment Capture Form Module -->
+    <div class="card">
+        <h3>Multi-Currency Clearing Terminal</h3>
+        <form id="switchForm">
+            <label>Cardholder Primary Account Number (PAN)</label>
+            <input type="text" id="pan" value="4111 2222 3333 4444" required>
+            
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label>Expiry Window</label>
+                    <input type="text" id="exp" value="12/31" required>
+                </div>
+                <div style="flex:1;">
+                    <label>Card CVV</label>
+                    <input type="password" id="cvv" value="564" required>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <div style="flex:2;">
+                    <label>Transaction Amount</label>
+                    <input type="number" id="amt" value="250.00" step="0.01" required>
+                </div>
+                <div style="flex:1;">
+                    <label>Currency ISO</label>
+                    <select id="cur">
+                        <option value="USD">USD ($)</option>
+                        <option value="EUR">EUR (€)</option>
+                        <option value="GBP">GBP (£)</option>
+                        <option value="ZAR">ZAR (R)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit">Execute Field-level Encrypted Auth Route</button>
+        </form>
+    </div>
+
+    <!-- Right Side: Core System Operating Console Monitoring Log View -->
+    <div class="card">
+        <h3>Batch Management & Network Logs</h3>
+        <p style="font-size:12px; margin-bottom:15px; color:#8592a3;">Transactions processed below are stored as secure AES-256-GCM encrypted strings in memory before the automated Nacha batch capture converts them back during settlement.</p>
+        
+        <button id="settleBtn" class="btn-settle">Dispatch Daily ACH Clearing File Batch</button>
+        
+        <div class="terminal-container">
+            <div class="terminal-header">
+                <span style="font-size:11px; color:#8592a3; font-weight:bold;">Hardware Node Link Stream Output:</span>
+                <button id="copyBtn" class="btn-copy">Copy Logs</button>
+            </div>
+            <pre id="consoleOut">System status operational. Network lines clear. Awaiting core connection handshakes...</pre>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const outputConsole = document.getElementById('consoleOut');
+    const copyBtn = document.getElementById('copyBtn');
+
+    // Clipboard Copy Execution Handler
+    copyBtn.addEventListener('click', async () => {
+        try {
+            await navigator.clipboard.writeText(outputConsole.toPlainText ? outputConsole.toPlainText() : outputConsole.textContent);
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = "Copied!";
+            copyBtn.style.background = "#27ae60";
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.style.background = "#3a475d";
+            }, 1500);
+        } catch (err) {
+            console.error("Clipboard copy failed: ", err);
+        }
+    });
+
+    // Handle Form Processing Authorization Routines
+    document.getElementById('switchForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        outputConsole.textContent = ">>> Instantiating Cardholder Checksum Verifications...\n>>> Isolating Plain-text Values inside Volatile RAM...\n";
+
+        const packetData = {
+            cardNumber: document.getElementById('pan').value,
+            expiry: document.getElementById('exp').value,
+            cvv: document.getElementById('cvv').value,
+            amount: document.getElementById('amt').value,
+            currency: document.getElementById('cur').value
+        };
+
+        try {
+            const res = await fetch('/gateway/v2/authorize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(packetData)
+            });
+            const data = await res.json();
+            outputConsole.textContent += `[Server Network Authorization Code Result: ${res.status}]\n` + JSON.stringify(data, null, 2);
+        } catch (err) {
+            outputConsole.textContent += `Fatal Application Switch Exception: ${err.message}`;
+        }
+    });
+
+    // Handle Triggering Asynchronous ACH File System Settlements
+    document.getElementById('settleBtn').addEventListener('click', async () => {
+        outputConsole.textContent = ">>> Requesting Global Clearing Vault Memory Scan...\n>>> Initiating Cryptographic Token Deciphering Phases for Bank Compilation...\n";
+        try {
+            const res = await fetch('/gateway/v2/settle-batch', { method: 'POST' });
+            if(res.status === 204) {
+                outputConsole.textContent += "System Flag Trace: Current processing ledger block records empty. Operations aborted.";
+                return;
+            }
+            const data = await res.json();
+            
+            // Format output beautifully if Nacha text configuration exists inside payload
+            if (data.fullNachaBatchFile) {
+                outputConsole.textContent = `=== GENERATED FIXED-WIDTH NACHA ACH FILE ===\n${data.fullNachaBatchFile}\n\n=== METADATA SUMMARY ===\nFile Saved As: ${data.outputFile}\nRecord Volume: ${data.clearingRecordCount}`;
+            } else {
+                outputConsole.textContent += `[Server Settlement Dispatch Code Result: ${res.status}]\n` + JSON.stringify(data, null, 2);
+            }
+        } catch (err) {
+            outputConsole.textContent += `Fatal Batch Compilation Exception: ${err.message}`;
+        }
+    });
+</script>
+</body>
+</html>
